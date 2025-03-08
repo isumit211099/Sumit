@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Software Faults Survey - Multi-Step</title>
+  <style>
+    /* Reset & Base Styles */
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #4e54c8, #8f94fb);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    .form-step {
+      display: none;
+    }
+    .form-step.active {
+      display: block;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+    .other-input {
+      display: none;
+      margin-top: 10px;
+    }
+    .buttons {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .buttons button {
+      background-color: #4e54c8;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      margin: 0 5px;
+      transition: background-color 0.3s ease;
+    }
+    .buttons button:hover {
+      background-color: #3b40a4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Software Faults Survey</h1>
+    <form id="surveyForm">
+      <div class="form-step active" id="phase1">
+        <h2>Phase 1: Overall Survey</h2>
+        <div class="question">
+          <label for="faultCategory">Fault Category:</label>
+          <select id="faultCategory" name="faultCategory" required>
+            <option value="" disabled selected>Select Fault Category</option>
+            <option value="Previous">Previous – Residual problems from previous releases</option>
+            <option value="Requirements">Requirements – Issues during requirements specification</option>
+            <option value="Design">Design – Issues during design/architecture</option>
+            <option value="Coding">Coding – Errors introduced during coding</option>
+            <option value="Testing environment">Testing Environment – Issues in test setup</option>
+            <option value="Testing">Testing – Problems found during testing</option>
+            <option value="Duplicates">Duplicates – Already reported faults</option>
+            <option value="No problems">No problems – Misunderstandings or non-issues</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="text" id="faultCategoryOther" name="faultCategoryOther" class="other-input" placeholder="Specify other fault category">
+        </div>
+        <div class="question">
+          <label for="testingPhase">Testing Phase (when the fault was found):</label>
+          <select id="testingPhase" name="testingPhase" required>
+            <option value="" disabled selected>Select Testing Phase</option>
+            <option value="CT">Capability Test (CT)</option>
+            <option value="ST">System Test (ST)</option>
+            <option value="SS">System Stability Test (SS)</option>
+            <option value="AT">Alpha Test (AT)</option>
+            <option value="RE">Released (RE)</option>
+          </select>
+        </div>
+        <div class="buttons">
+          <button type="button" id="nextBtn">Next</button>
+        </div>
+      </div>
+      <div class="form-step" id="phase2">
+        <h2>Phase 2: Design/Code Fault Survey</h2>
+        <div class="buttons">
+          <button type="button" id="prevBtn">Back</button>
+          <button type="submit">Submit Survey</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <script>
+    const phase1 = document.getElementById("phase1");
+    const phase2 = document.getElementById("phase2");
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const surveyForm = document.getElementById("surveyForm");
+    
+    nextBtn.addEventListener("click", function() {
+      phase1.classList.remove("active");
+      phase2.classList.add("active");
+    });
+    prevBtn.addEventListener("click", function() {
+      phase2.classList.remove("active");
+      phase1.classList.add("active");
+    });
+    
+    surveyForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(surveyForm);
+      const data = Object.fromEntries(formData.entries());
+      
+      fetch("YOUR_WEB_APP_URL_HERE", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        alert("Thank you for completing the survey!");
+        surveyForm.reset();
+        phase2.classList.remove("active");
+        phase1.classList.add("active");
+      })
+      .catch(error => console.error("Error:", error));
+    });
+  </script>
+</body>
+</html>
